@@ -7,7 +7,7 @@ import CompetitionDetailsScreen from './src/screens/CompetitionDetailsScreen';
 import { API_BASE_URL } from './src/api/client';
 
 // Keep the id you already have here.
-const DEMO_COMPETITION_ID = '6ab548bba7d56631ccbb0307';
+const DEMO_COMPETITION_ID = '6ab54e92ded77a9b79d2cd30';
 
 // DEV ONLY: signs in as the seeded demo user until a real login screen exists.
 async function devLogin() {
