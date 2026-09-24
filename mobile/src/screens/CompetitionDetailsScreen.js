@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
- 
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '../theme/colors';
 import useCompetitionDetails from '../hooks/useCompetitionDetails';
