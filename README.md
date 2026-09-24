@@ -5,6 +5,15 @@ React Native frontend + Node.js/Express backend + MongoDB, with all
 competition/registration/submission state served from the database and
 computed live against the current time — nothing is hardcoded.
 
+## Live demo
+
+- **Web app:** https://feedants-web.vercel.app
+- **API:** https://feedants-competition-app.vercel.app (try `/health` and `/api/competitions`)
+
+The web app is the same React Native (Expo) codebase exported for web and
+deployed on Vercel; the API is the Express backend deployed on Vercel as a
+serverless function, backed by MongoDB Atlas.
+
 ## Structure
 
 ```
@@ -47,6 +56,24 @@ npm start   # opens Expo dev tools; press i / a to launch a simulator, or scan t
 
 The screen currently calls the API without a login screen wired up for
 brevity — see "Assumptions" below.
+
+## Deployment
+
+Both projects are deployed from this repo as separate Vercel projects.
+
+**Backend** (Root Directory: `backend`, preset: Other)
+- `backend/api/index.js` is the serverless entry. It reuses the Mongo
+  connection across warm invocations and hands requests to the Express app
+  from `src/app.js`. `src/server.js` is still used for local development.
+- `backend/vercel.json` rewrites every path to that function.
+- Environment variables set in Vercel: `MONGO_URI`, `JWT_SECRET`,
+  `JWT_EXPIRES_IN`, `CLIENT_ORIGIN`.
+- MongoDB Atlas allows `0.0.0.0/0`, since Vercel functions use rotating IPs.
+- `app.set('trust proxy', 1)` is enabled so rate limiting sees real client IPs.
+
+**Web app** (Root Directory: `mobile`)
+- Build Command: `npx expo export -p web`, Output Directory: `dist`.
+- `API_BASE_URL` in `mobile/src/api/client.js` points at the live API.
 
 ## API overview
 

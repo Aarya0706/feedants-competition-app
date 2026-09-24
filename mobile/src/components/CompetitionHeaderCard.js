@@ -28,11 +28,11 @@ export default function CompetitionHeaderCard({ competition, state, viewer }) {
       </View>
 
       <View style={styles.statsRow}>
-        <View>
+        <View style={styles.stat}>
           <Text style={styles.statLabel}>Prize Pool</Text>
           <Text style={styles.statValue}>₹ {competition.prizePoolTotal}</Text>
         </View>
-        <View>
+        <View style={styles.stat}>
           <Text style={styles.statLabel}>Entry Fee</Text>
           <Text style={styles.statValue}>₹ {competition.entryFee}</Text>
         </View>
@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
   tag: { backgroundColor: colors.background, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: 4 },
   tagText: { color: colors.textSecondary, fontSize: 12, fontWeight: '600' },
   highlightNote: { color: colors.textSecondary, fontSize: 12 },
-  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.lg },
+  statsRow: { flexDirection: 'row', justifyContent: 'flex-start', marginTop: spacing.lg },
+  stat: { marginRight: spacing.xl },
   statLabel: { color: colors.textMuted, fontSize: 12, marginBottom: 4 },
   statValue: { color: colors.textPrimary, fontSize: 18, fontWeight: '700' },
   spotsBlock: { flex: 1, marginLeft: spacing.lg },
