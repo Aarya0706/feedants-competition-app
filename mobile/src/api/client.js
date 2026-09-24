@@ -1,9 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Point this at your machine's LAN IP when running on a physical device -
-// "localhost" only resolves inside the iOS simulator, not on a real phone
-// or the Android emulator (use 10.0.2.2 for the Android emulator).
-export const API_BASE_URL = 'http://localhost:4000/api';
+export const API_BASE_URL = 'https://feedants-competition-app.vercel.app/api';
 
 async function request(path, { method = 'GET', body, auth = true } = {}) {
   const headers = { 'Content-Type': 'application/json' };
