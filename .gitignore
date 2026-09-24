@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.local
+
+# Expo / React Native
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.log
+npm-debug.*
+
+# OS
+.DS_Store
