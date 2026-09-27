@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
-import { colors, spacing, radius } from '../theme/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors, spacing, radius, shadow } from '../theme/colors';
 
 // Single source of truth for what the primary CTA should say and do,
 // given the server's derived competition state + this viewer's
@@ -42,6 +43,7 @@ function resolveAction(state, viewer) {
 
 export default function ActionFooter({ state, viewer, busy, onRegister, onPay, onSubmitEntry, onViewResults }) {
   const action = resolveAction(state, viewer);
+  const insets = useSafeAreaInsets();
 
   const handlePress = () => {
     if (busy || !action.enabled) return;
@@ -52,11 +54,15 @@ export default function ActionFooter({ state, viewer, busy, onRegister, onPay, o
   };
 
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
       <Pressable
         onPress={handlePress}
         disabled={!action.enabled || busy}
-        style={[styles.button, (!action.enabled || busy) && styles.buttonDisabled]}
+        style={({ pressed }) => [
+          styles.button,
+          !action.enabled && styles.buttonDisabled,
+          pressed && action.enabled && styles.buttonPressed,
+        ]}
       >
         {busy ? (
           <ActivityIndicator color="#fff" />
@@ -72,14 +78,22 @@ export default function ActionFooter({ state, viewer, busy, onRegister, onPay, o
 }
 
 const styles = StyleSheet.create({
-  wrapper: { padding: spacing.md, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.border },
+  wrapper: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    backgroundColor: colors.card,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    ...shadow.raised,
+  },
   button: {
     backgroundColor: colors.accent,
     borderRadius: radius.md,
     paddingVertical: spacing.md,
     alignItems: 'center',
   },
+  buttonPressed: { backgroundColor: colors.accentDark },
   buttonDisabled: { backgroundColor: colors.textMuted },
-  buttonLabel: { color: '#fff', fontSize: 15, fontWeight: '700' },
-  buttonSub: { color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 2 },
+  buttonLabel: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: 0.2 },
+  buttonSub: { color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 2, fontWeight: '600' },
 });

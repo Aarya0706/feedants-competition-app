@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import { colors, spacing, radius } from '../theme/colors';
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { colors, spacing, radius, shadow } from '../theme/colors';
 
 export default function SubmissionModal({ visible, onClose, onSubmit, submitting }) {
   const [mediaUrl, setMediaUrl] = useState('');
@@ -13,32 +22,51 @@ export default function SubmissionModal({ visible, onClose, onSubmit, submitting
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.backdrop}>
+      <KeyboardAvoidingView
+        style={styles.backdrop}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
         <View style={styles.sheet}>
+          <View style={styles.handle} />
           <Text style={styles.title}>Upload Submission</Text>
           <Text style={styles.hint}>Paste a link to your uploaded performance video.</Text>
 
+          <Text style={styles.fieldLabel}>Media link</Text>
           <TextInput
             style={styles.input}
             placeholder="https://..."
+            placeholderTextColor={colors.textMuted}
             value={mediaUrl}
             onChangeText={setMediaUrl}
             autoCapitalize="none"
+            autoCorrect={false}
           />
+
+          <Text style={styles.fieldLabel}>Caption (optional)</Text>
           <TextInput
             style={[styles.input, styles.captionInput]}
-            placeholder="Caption (optional)"
+            placeholder="Say a bit about your entry..."
+            placeholderTextColor={colors.textMuted}
             value={caption}
             onChangeText={setCaption}
             multiline
           />
 
           <View style={styles.actions}>
-            <Pressable style={[styles.actionButton, styles.cancelButton]} onPress={onClose}>
+            <Pressable
+              style={({ pressed }) => [styles.actionButton, styles.cancelButton, pressed && styles.pressedDim]}
+              onPress={onClose}
+            >
               <Text style={styles.cancelLabel}>Cancel</Text>
             </Pressable>
             <Pressable
-              style={[styles.actionButton, styles.submitButton, !mediaUrl.trim() && styles.submitDisabled]}
+              style={({ pressed }) => [
+                styles.actionButton,
+                styles.submitButton,
+                !mediaUrl.trim() && styles.submitDisabled,
+                pressed && mediaUrl.trim() && styles.pressedDim,
+              ]}
               onPress={handleSubmit}
               disabled={!mediaUrl.trim() || submitting}
             >
@@ -46,29 +74,41 @@ export default function SubmissionModal({ visible, onClose, onSubmit, submitting
             </Pressable>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  sheet: { backgroundColor: colors.card, borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, padding: spacing.lg },
-  title: { fontSize: 16, fontWeight: '700', color: colors.textPrimary },
-  hint: { fontSize: 12, color: colors.textSecondary, marginTop: spacing.xs, marginBottom: spacing.md },
+  backdrop: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
+  sheet: {
+    backgroundColor: colors.card,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    padding: spacing.lg,
+    paddingTop: spacing.sm,
+    ...shadow.raised,
+  },
+  handle: { width: 40, height: 4, borderRadius: 2, backgroundColor: colors.border, alignSelf: 'center', marginBottom: spacing.md },
+  title: { fontSize: 17, fontWeight: '800', color: colors.textPrimary },
+  hint: { fontSize: 12, color: colors.textSecondary, marginTop: spacing.xs, marginBottom: spacing.lg },
+  fieldLabel: { fontSize: 11, fontWeight: '700', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: spacing.xs },
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.sm,
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
     padding: spacing.md,
     fontSize: 13,
+    color: colors.textPrimary,
     marginBottom: spacing.md,
   },
-  captionInput: { minHeight: 60, textAlignVertical: 'top' },
-  actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.md },
-  actionButton: { paddingVertical: spacing.sm, paddingHorizontal: spacing.lg, borderRadius: radius.sm },
+  captionInput: { minHeight: 64, textAlignVertical: 'top' },
+  actions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.md, marginTop: spacing.xs },
+  actionButton: { paddingVertical: spacing.sm, paddingHorizontal: spacing.lg, borderRadius: radius.md },
+  pressedDim: { opacity: 0.75 },
   cancelButton: { backgroundColor: colors.background },
-  cancelLabel: { color: colors.textSecondary, fontWeight: '600' },
+  cancelLabel: { color: colors.textSecondary, fontWeight: '700' },
   submitButton: { backgroundColor: colors.accent },
   submitDisabled: { backgroundColor: colors.textMuted },
   submitLabel: { color: '#fff', fontWeight: '700' },

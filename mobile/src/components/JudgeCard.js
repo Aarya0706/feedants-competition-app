@@ -1,17 +1,19 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Linking } from 'react-native';
-import { colors, spacing, radius } from '../theme/colors';
+import { colors, spacing, radius, shadow } from '../theme/colors';
 
 export default function JudgeCard({ judge }) {
   return (
     <View style={styles.card}>
-      {judge.photoUrl ? (
-        <Image source={{ uri: judge.photoUrl }} style={styles.avatar} />
-      ) : (
-        <View style={[styles.avatar, styles.avatarFallback]}>
-          <Text style={styles.avatarInitial}>{judge.name.charAt(0)}</Text>
-        </View>
-      )}
+      <View style={styles.avatarRing}>
+        {judge.photoUrl ? (
+          <Image source={{ uri: judge.photoUrl }} style={styles.avatar} />
+        ) : (
+          <View style={[styles.avatar, styles.avatarFallback]}>
+            <Text style={styles.avatarInitial}>{judge.name.charAt(0)}</Text>
+          </View>
+        )}
+      </View>
 
       <View style={styles.info}>
         <Text style={styles.role}>{judge.title}</Text>
@@ -21,8 +23,13 @@ export default function JudgeCard({ judge }) {
       </View>
 
       {!!judge.introVideoUrl && (
-        <Pressable style={styles.playButton} onPress={() => Linking.openURL(judge.introVideoUrl)}>
-          <Text style={styles.playIcon}>▶</Text>
+        <Pressable
+          style={({ pressed }) => [styles.playButton, pressed && styles.playButtonPressed]}
+          onPress={() => Linking.openURL(judge.introVideoUrl)}
+        >
+          <View style={styles.playCircle}>
+            <Text style={styles.playIcon}>▶</Text>
+          </View>
           <Text style={styles.playLabel}>Intro Video</Text>
         </Pressable>
       )}
@@ -38,15 +45,33 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
+    ...shadow.card,
   },
-  avatar: { width: 56, height: 56, borderRadius: 28 },
+  avatarRing: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    padding: 2,
+    borderWidth: 1.5,
+    borderColor: colors.primaryLight,
+  },
+  avatar: { width: '100%', height: '100%', borderRadius: 26 },
   avatarFallback: { backgroundColor: colors.primaryLight, alignItems: 'center', justifyContent: 'center' },
   avatarInitial: { color: colors.primary, fontSize: 20, fontWeight: '700' },
   info: { flex: 1, marginLeft: spacing.md },
-  role: { color: colors.textMuted, fontSize: 12 },
-  name: { color: colors.textPrimary, fontSize: 16, fontWeight: '700' },
-  subtitle: { color: colors.textSecondary, fontSize: 12 },
+  role: { color: colors.textMuted, fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.3 },
+  name: { color: colors.textPrimary, fontSize: 16, fontWeight: '800', marginTop: 2 },
+  subtitle: { color: colors.textSecondary, fontSize: 12, marginTop: 1 },
   playButton: { alignItems: 'center' },
-  playIcon: { color: colors.primary, fontSize: 20 },
-  playLabel: { color: colors.primary, fontSize: 11, marginTop: 2 },
+  playButtonPressed: { opacity: 0.6 },
+  playCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playIcon: { color: colors.primary, fontSize: 14 },
+  playLabel: { color: colors.primary, fontSize: 10, fontWeight: '700', marginTop: 4 },
 });

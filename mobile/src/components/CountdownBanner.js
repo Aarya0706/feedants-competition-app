@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, spacing, radius } from '../theme/colors';
+import { colors, spacing, radius, shadow } from '../theme/colors';
 import { getCountdownParts } from '../utils/dateUtils';
 
 // Picks the next relevant deadline based on the competition's current
@@ -38,10 +38,18 @@ export default function CountdownBanner({ competition, state, getServerNow }) {
 
   return (
     <View style={[styles.banner, isUrgent && styles.bannerUrgent]}>
-      <Text style={styles.icon}>⏳</Text>
-      <Text style={styles.label}>{target.label}</Text>
-      <Text style={styles.countdown}>{parts.label}</Text>
-      {isUrgent && <Text style={styles.hurry}>⏰ Hurry up!</Text>}
+      <View style={[styles.iconWrap, isUrgent && styles.iconWrapUrgent]}>
+        <Text style={styles.icon}>{isUrgent ? '⏰' : '⏳'}</Text>
+      </View>
+      <View style={styles.textBlock}>
+        <Text style={[styles.label, isUrgent && styles.labelUrgent]}>{target.label}</Text>
+        <Text style={[styles.countdown, isUrgent && styles.countdownUrgent]}>{parts.label}</Text>
+      </View>
+      {isUrgent && (
+        <View style={styles.hurryPill}>
+          <Text style={styles.hurryText}>Hurry up</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -50,15 +58,30 @@ const styles = StyleSheet.create({
   banner: {
     backgroundColor: colors.primaryLight,
     borderRadius: radius.md,
-    padding: spacing.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
     marginBottom: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
+    ...shadow.card,
   },
-  bannerUrgent: { backgroundColor: '#FDECEC' },
-  icon: { marginRight: spacing.xs },
-  label: { color: colors.textPrimary, fontWeight: '600', fontSize: 13, flexShrink: 1 },
-  countdown: { color: colors.primary, fontWeight: '700', fontSize: 14, marginLeft: 'auto' },
-  hurry: { color: colors.danger, fontSize: 12, fontWeight: '600', width: '100%', textAlign: 'right', marginTop: 4 },
+  bannerUrgent: { backgroundColor: colors.dangerLight },
+  iconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(15, 122, 110, 0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.md,
+  },
+  iconWrapUrgent: { backgroundColor: 'rgba(220, 38, 38, 0.12)' },
+  icon: { fontSize: 16 },
+  textBlock: { flex: 1 },
+  label: { color: colors.textSecondary, fontWeight: '600', fontSize: 12 },
+  labelUrgent: { color: colors.danger },
+  countdown: { color: colors.primary, fontWeight: '800', fontSize: 16, marginTop: 2 },
+  countdownUrgent: { color: colors.danger },
+  hurryPill: { backgroundColor: colors.danger, borderRadius: radius.pill, paddingHorizontal: spacing.sm, paddingVertical: 4, marginLeft: spacing.sm },
+  hurryText: { color: '#fff', fontSize: 10, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 0.3 },
 });
